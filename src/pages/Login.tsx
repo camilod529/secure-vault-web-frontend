@@ -1,58 +1,19 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { login } from "../store/slices/auth/authSlice";
-import { envs } from "../config/envs";
-import { AuthResponse } from "../interfaces/authResponse.interface";
-import Swal from "sweetalert2";
+import { useAuthStore } from "../hooks/useAuthStore";
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const apiUrl = envs.API_URL;
+  const { startLogin } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    try {
-      const response = await fetch(`${apiUrl}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data: AuthResponse = await response.json();
-
-      if (data.error || !data.token) {
-        Swal.fire({
-          icon: "error",
-          title: "Login failed",
-          text: data.message,
-        });
-        return;
-      }
-
-      dispatch(
-        login({
-          email: data.email,
-          password: data.password,
-          token: data.token,
-          fullName: data.fullName,
-        })
-      );
-      navigate("/");
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "An error occurred",
-        text: "Please try again later.",
-      });
-      console.error("An error occurred", error);
-    }
+    startLogin({
+      email,
+      password,
+    });
   };
 
   const handleRegisterRedirect = () => {
