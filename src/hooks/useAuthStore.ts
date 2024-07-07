@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import Swal from "sweetalert2";
 import { appApi } from "../api";
 import { login, logout } from "../store/slices/auth/authSlice";
+import axios from "axios";
 
 type returnType = {
   email: string;
@@ -11,6 +12,15 @@ type returnType = {
   fullName: string;
   isAuthenticated: boolean;
   startLogin: ({ email, password }: { email: string; password: string }) => Promise<void>;
+  startRegister: ({
+    email,
+    password,
+    fullName,
+  }: {
+    email: string;
+    password: string;
+    fullName: string;
+  }) => Promise<void>;
 };
 
 export const useAuthStore = (): returnType => {
@@ -24,15 +34,61 @@ export const useAuthStore = (): returnType => {
       localStorage.setItem("token-init-date", new Date().getTime().toString());
       dispatch(login(data));
     } catch (error) {
-      const errorMessage = error.response.data.message || "An error occurred";
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.message || "An error occurred";
+        console.error("Axios error:", error.response?.data);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: errorMessage,
+          timer: 2500,
+        });
+      } else {
+        console.error("Error occurred:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "An error occurred",
+          timer: 2500,
+        });
+      }
       dispatch(logout({}));
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: errorMessage,
-        timer: 2500,
-      });
-      console.log(error);
+    }
+  };
+
+  const startRegister = async ({
+    email,
+    password,
+    fullName,
+  }: {
+    email: string;
+    password: string;
+    fullName: string;
+  }) => {
+    try {
+      const { data } = await appApi.post("/auth/register", { email, password, fullName });
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("token-init-date", new Date().getTime().toString());
+      dispatch(login(data));
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.message || "An error occurred";
+        console.error("Axios error:", error.response?.data);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: errorMessage,
+          timer: 2500,
+        });
+      } else {
+        console.error("Error occurred:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "An error occurred",
+          timer: 2500,
+        });
+      }
     }
   };
 
@@ -44,5 +100,6 @@ export const useAuthStore = (): returnType => {
     isAuthenticated,
     //* Methods
     startLogin,
+    startRegister,
   };
 };

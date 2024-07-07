@@ -8,7 +8,7 @@ export const Login: React.FC = () => {
   const navigate = useNavigate();
   const { startLogin } = useAuthStore();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     startLogin({
       email,

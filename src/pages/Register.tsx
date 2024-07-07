@@ -1,65 +1,17 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { login } from "../store/slices/auth/authSlice";
-import { envs } from "../config/envs";
-import { AuthResponse } from "../interfaces/authResponse.interface";
-import Swal from "sweetalert2";
+import { useAuthStore } from "../hooks";
 
 export const Register: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const apiUrl = envs.API_URL;
+  const { startRegister } = useAuthStore();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    try {
-      const response = await fetch(`${apiUrl}/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password, fullName }),
-      });
-
-      const data: AuthResponse = await response.json();
-
-      if (data.error) {
-        Swal.fire({
-          icon: "error",
-          title: "Registration failed",
-          text: data.message,
-        });
-        return;
-      }
-
-      dispatch(
-        login({
-          email: data.email,
-          password: data.password,
-          token: data.token,
-          fullName: data.fullName,
-        })
-      );
-      Swal.fire({
-        icon: "success",
-        title: "Registration successful",
-        text: "You have been successfully registered.",
-      }).then(() => {
-        navigate("/");
-      });
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "An error occurred",
-        text: "Please try again later.",
-      });
-      console.error("An error occurred", error);
-    }
+    startRegister({ email, password, fullName });
   };
 
   const handleLoginRedirect = () => {
