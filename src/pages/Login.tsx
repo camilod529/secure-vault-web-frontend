@@ -2,16 +2,43 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login } from "../store/slices/auth/authSlice";
+import { envs } from "../config/envs";
+import { LoginResponse } from "../interfaces/loginResponse.interface";
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const apiUrl = envs.API_URL;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(login({ email, password }));
+
+    try {
+      const response = await fetch(`${apiUrl}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data: LoginResponse = await response.json();
+
+      console.log({ data });
+
+      if (data.error) {
+        alert(data.message);
+        return;
+      }
+
+      dispatch(login({ email: data.email, password: data.password, token: data.token }));
+      navigate("/");
+    } catch (error) {
+      alert("An error occurred. Please try again.");
+      console.error("An error occurred", error);
+    }
   };
 
   const handleRegisterRedirect = () => {
