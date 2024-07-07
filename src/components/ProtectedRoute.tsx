@@ -7,10 +7,8 @@ interface ProtectedRouteProps {
   element: React.ComponentType;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element: Component }) => {
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element: Component }) => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   return isAuthenticated ? <Component /> : <Navigate to="/login" />;
 };
-
-export default ProtectedRoute;

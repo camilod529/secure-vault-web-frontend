@@ -7,10 +7,8 @@ interface PublicRouteProps {
   element: React.ComponentType;
 }
 
-const PublicRoute: React.FC<PublicRouteProps> = ({ element: Component }) => {
+export const PublicRoute: React.FC<PublicRouteProps> = ({ element: Component }) => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   return isAuthenticated ? <Navigate to="/" /> : <Component />;
 };
-
-export default PublicRoute;
