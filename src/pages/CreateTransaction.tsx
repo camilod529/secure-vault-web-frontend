@@ -1,68 +1,35 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
 import { Currency } from "../interfaces/currency.enum";
-import { envs } from "../config/envs";
+import { useTransaction } from "../hooks";
 import Swal from "sweetalert2";
 
 export const CreateTransaction: React.FC = () => {
-  const token = useSelector((state: RootState) => state.auth.token);
   const [name, setName] = useState("");
   const [amount, setAmount] = useState<number | "">("");
   const [currency, setCurrency] = useState<Currency>(Currency.COP);
   const [transactionType, setTransactionType] = useState<"Income" | "Expense">("Income"); // Estado para el tipo de transacción
-  const apiUrl = envs.API_URL;
-  const fetchUrl = `${apiUrl}/transactions`;
+  const { startCreatingTransaction } = useTransaction();
 
   const handleCreateTransaction = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const amountValue =
-        transactionType === "Income"
-          ? Math.abs(parseFloat(amount as string))
-          : -Math.abs(parseFloat(amount as string));
-
-      const response = await fetch(fetchUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          name,
-          amount: amountValue,
-          currency,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-        Swal.fire({
-          icon: "success",
-          title: "Transaction created successfully!",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-        setName("");
-        setAmount("");
-        setCurrency(Currency.COP);
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Failed to create transaction",
-          text: "Please try again later.",
-        });
-      }
-    } catch (error) {
-      console.error("Error creating transaction:", error);
-      Swal.fire({
+    if (amount === "")
+      return Swal.fire({
         icon: "error",
-        title: "Failed to create transaction",
-        text: "Please try again later.",
+        title: "Amount is required",
       });
-    }
+
+    if (typeof amount !== "number")
+      return Swal.fire({
+        icon: "error",
+        title: "Amount must be a number",
+      });
+
+    startCreatingTransaction({
+      name,
+      amount,
+      currency,
+    });
   };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {

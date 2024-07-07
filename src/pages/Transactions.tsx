@@ -1,42 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
 import { Transaction } from "../interfaces/transactionResponse.interface";
 import { Currency } from "../interfaces/currency.enum";
-import { envs } from "../config/envs";
 import { Link } from "react-router-dom";
+import { useTransaction } from "../hooks/useTransaction";
 
 export const Transactions: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const token = useSelector((state: RootState) => state.auth.token);
-  const apiUrl = envs.API_URL;
-  const fetchUrl = `${apiUrl}/transactions`;
-
+  const { startLoadingTransactions } = useTransaction();
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const response = await fetch(fetchUrl, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          data.sort((a: Transaction, b: Transaction) => (a.created_at > b.created_at ? -1 : 1));
-          setTransactions(data);
-        } else {
-          console.error("Failed to fetch transactions");
-        }
-      } catch (error) {
-        console.error("Error fetching transactions:", error);
-      }
-    };
-
-    if (token) {
-      fetchTransactions();
-    }
-  }, [token, fetchUrl]);
+    startLoadingTransactions().then((transactions) => {
+      setTransactions(transactions);
+    });
+  }, [startLoadingTransactions]);
 
   const getCurrenciesTotal = (currency: Currency): number => {
     return transactions.reduce((total, transaction) => {

@@ -3,12 +3,13 @@ export interface Transaction {
   name: string;
   amount: number;
   currency: string;
-  created_at: string;
-  updated_at: string;
+  created_at: Date;
+  updated_at?: Date;
   deleted: boolean;
   createdBy: User;
 }
-interface User {
+
+export interface User {
   id: string;
   email: string;
   fullName: string;
