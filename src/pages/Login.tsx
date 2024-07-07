@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login } from "../store/slices/auth/authSlice";
 import { envs } from "../config/envs";
-import { LoginResponse } from "../interfaces/loginResponse.interface";
+import { AuthResponse } from "../interfaces/authResponse.interface";
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -24,16 +24,21 @@ export const Login: React.FC = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      const data: LoginResponse = await response.json();
+      const data: AuthResponse = await response.json();
 
-      console.log({ data });
-
-      if (data.error) {
+      if (data.error || !data.token) {
         alert(data.message);
         return;
       }
 
-      dispatch(login({ email: data.email, password: data.password, token: data.token }));
+      dispatch(
+        login({
+          email: data.email,
+          password: data.password,
+          token: data.token,
+          fullName: data.fullName,
+        })
+      );
       navigate("/");
     } catch (error) {
       alert("An error occurred. Please try again.");
