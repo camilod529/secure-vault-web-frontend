@@ -1,8 +1,16 @@
 import { Route, Routes } from "react-router-dom";
 import { Home, Login, Register, CreateTransaction, Transactions, Total } from "../pages";
 import { ProtectedRoute, PublicRoute } from "../components";
+import { useAuthStore } from "../hooks";
+import { useEffect } from "react";
 
 export const Router: React.FC = () => {
+  const { checkAuthToken } = useAuthStore();
+
+  useEffect(() => {
+    checkAuthToken();
+  }, [checkAuthToken]);
+
   return (
     <Routes>
       <Route path="/" element={<ProtectedRoute element={Home} />} />

@@ -23,6 +23,7 @@ type returnType = {
     fullName: string;
   }) => Promise<void>;
   startLogout: () => void;
+  checkAuthToken: () => void;
 };
 
 export const useAuthStore = (): returnType => {
@@ -102,6 +103,22 @@ export const useAuthStore = (): returnType => {
     navigate("/login");
   };
 
+  const checkAuthToken = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return dispatch(logout({}));
+
+    try {
+      const { data } = await appApi.get("/auth/check-status");
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("token-init-date", new Date().getTime().toString());
+      dispatch(login(data));
+    } catch (error) {
+      localStorage.clear();
+      console.error("Error occurred:", error);
+      dispatch(logout({}));
+    }
+  };
+
   return {
     //* Properties
     email,
@@ -112,5 +129,6 @@ export const useAuthStore = (): returnType => {
     startLogin,
     startRegister,
     startLogout,
+    checkAuthToken,
   };
 };
