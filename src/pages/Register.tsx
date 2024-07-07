@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { login } from "../store/slices/auth/authSlice";
 import { envs } from "../config/envs";
 import { AuthResponse } from "../interfaces/authResponse.interface";
+import Swal from "sweetalert2";
 
 export const Register: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -27,10 +28,12 @@ export const Register: React.FC = () => {
 
       const data: AuthResponse = await response.json();
 
-      console.log({ data });
-
       if (data.error) {
-        alert(data.message);
+        Swal.fire({
+          icon: "error",
+          title: "Registration failed",
+          text: data.message,
+        });
         return;
       }
 
@@ -42,12 +45,23 @@ export const Register: React.FC = () => {
           fullName: data.fullName,
         })
       );
-      navigate("/");
+      Swal.fire({
+        icon: "success",
+        title: "Registration successful",
+        text: "You have been successfully registered.",
+      }).then(() => {
+        navigate("/");
+      });
     } catch (error) {
-      alert("An error occurred. Please try again.");
+      Swal.fire({
+        icon: "error",
+        title: "An error occurred",
+        text: "Please try again later.",
+      });
       console.error("An error occurred", error);
     }
   };
+
   const handleLoginRedirect = () => {
     navigate("/login");
   };

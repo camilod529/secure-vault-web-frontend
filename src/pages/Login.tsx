@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { login } from "../store/slices/auth/authSlice";
 import { envs } from "../config/envs";
 import { AuthResponse } from "../interfaces/authResponse.interface";
+import Swal from "sweetalert2";
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -27,7 +28,11 @@ export const Login: React.FC = () => {
       const data: AuthResponse = await response.json();
 
       if (data.error || !data.token) {
-        alert(data.message);
+        Swal.fire({
+          icon: "error",
+          title: "Login failed",
+          text: data.message,
+        });
         return;
       }
 
@@ -41,7 +46,11 @@ export const Login: React.FC = () => {
       );
       navigate("/");
     } catch (error) {
-      alert("An error occurred. Please try again.");
+      Swal.fire({
+        icon: "error",
+        title: "An error occurred",
+        text: "Please try again later.",
+      });
       console.error("An error occurred", error);
     }
   };
