@@ -2,9 +2,11 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../store/store";
+import { useAuthStore } from "../hooks";
 
 export const Home: React.FC = () => {
   const fullName = useSelector((state: RootState) => state.auth.fullName);
+  const { startLogout } = useAuthStore();
   const navigate = useNavigate();
 
   const handleCreateTransaction = () => {
@@ -42,9 +44,15 @@ export const Home: React.FC = () => {
         </button>
         <button
           onClick={handleViewTotal}
-          className="w-full bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600"
+          className="w-full bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600 mb-4"
         >
           View Total Money in Safe
+        </button>
+        <button
+          onClick={startLogout}
+          className="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600"
+        >
+          Logout
         </button>
       </div>
     </div>

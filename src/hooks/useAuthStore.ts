@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import { appApi } from "../api";
 import { login, logout } from "../store/slices/auth/authSlice";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 type returnType = {
   email: string;
@@ -21,10 +22,12 @@ type returnType = {
     password: string;
     fullName: string;
   }) => Promise<void>;
+  startLogout: () => void;
 };
 
 export const useAuthStore = (): returnType => {
   const { email, token, fullName, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const startLogin = async ({ email, password }: { email: string; password: string }) => {
@@ -92,6 +95,13 @@ export const useAuthStore = (): returnType => {
     }
   };
 
+  const startLogout = () => {
+    dispatch(logout({}));
+    localStorage.removeItem("token");
+    localStorage.removeItem("token-init-date");
+    navigate("/login");
+  };
+
   return {
     //* Properties
     email,
@@ -101,5 +111,6 @@ export const useAuthStore = (): returnType => {
     //* Methods
     startLogin,
     startRegister,
+    startLogout,
   };
 };
