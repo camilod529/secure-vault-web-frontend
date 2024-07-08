@@ -6,6 +6,7 @@ import { appApi } from "../api";
 import { login, logout } from "../store/slices/auth/authSlice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next"; // 1. Importa useTranslation
 
 type returnType = {
   email: string;
@@ -27,6 +28,7 @@ type returnType = {
 };
 
 export const useAuthStore = (): returnType => {
+  const { t } = useTranslation(); // 2. Usa useTranslation para acceder a las traducciones
   const { email, token, fullName, isAuthenticated } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -39,11 +41,11 @@ export const useAuthStore = (): returnType => {
       dispatch(login(data));
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.message || "An error occurred";
+        const errorMessage = error.response?.data?.message || t("An error occurred"); // 3. Usa t() para obtener el mensaje traducido
         console.error("Axios error:", error.response?.data);
         Swal.fire({
           icon: "error",
-          title: "Oops...",
+          title: t("Oops..."),
           text: errorMessage,
           timer: 2500,
         });
@@ -51,8 +53,8 @@ export const useAuthStore = (): returnType => {
         console.error("Error occurred:", error);
         Swal.fire({
           icon: "error",
-          title: "Oops...",
-          text: "An error occurred",
+          title: t("Oops..."),
+          text: t("An error occurred"),
           timer: 2500,
         });
       }
@@ -77,18 +79,18 @@ export const useAuthStore = (): returnType => {
     } catch (error) {
       console.error("Error occurred:", error);
       if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.message || "An error occurred";
+        const errorMessage = error.response?.data?.message || t("An error occurred"); // 4. Usa t() para obtener el mensaje traducido
         Swal.fire({
           icon: "error",
-          title: "Oops...",
+          title: t("Oops..."),
           text: errorMessage,
           timer: 2500,
         });
       } else {
         Swal.fire({
           icon: "error",
-          title: "Oops...",
-          text: "An error occurred",
+          title: t("Oops..."),
+          text: t("An error occurred"),
           timer: 2500,
         });
       }

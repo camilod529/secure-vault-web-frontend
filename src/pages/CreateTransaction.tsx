@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Currency } from "../interfaces/currency.enum";
 import { useTransaction } from "../hooks";
 import Swal from "sweetalert2";
 
 export const CreateTransaction: React.FC = () => {
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [amount, setAmount] = useState<number | "">("");
   const [currency, setCurrency] = useState<Currency>(Currency.COP);
@@ -16,13 +18,13 @@ export const CreateTransaction: React.FC = () => {
     if (amount === "")
       return Swal.fire({
         icon: "error",
-        title: "Amount is required",
+        title: t("Amount is required"),
       });
 
     if (typeof amount !== "number")
       return Swal.fire({
         icon: "error",
-        title: "Amount must be a number",
+        title: t("Amount must be a number"),
       });
 
     startCreatingTransaction({
@@ -39,11 +41,11 @@ export const CreateTransaction: React.FC = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="max-w-md w-full mx-auto bg-white shadow-md rounded-lg overflow-hidden p-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Create Transaction</h2>
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">{t("Create Transaction")}</h2>
         <form onSubmit={handleCreateTransaction} className="space-y-4">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-              Name
+              {t("Name")}
             </label>
             <input
               type="text"
@@ -56,7 +58,7 @@ export const CreateTransaction: React.FC = () => {
           </div>
           <div>
             <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
-              Amount
+              {t("Amount")}
             </label>
             <input
               type="number"
@@ -70,7 +72,7 @@ export const CreateTransaction: React.FC = () => {
           </div>
           <div>
             <label htmlFor="transactionType" className="block text-sm font-medium text-gray-700">
-              Transaction Type
+              {t("Transaction Type")}
             </label>
             <select
               id="transactionType"
@@ -79,13 +81,13 @@ export const CreateTransaction: React.FC = () => {
               onChange={(e) => setTransactionType(e.target.value as "Income" | "Expense")}
               required
             >
-              <option value="Income">Income</option>
-              <option value="Expense">Expense</option>
+              <option value="Income">{t("Income")}</option>
+              <option value="Expense">{t("Expense")}</option>
             </select>
           </div>
           <div>
             <label htmlFor="currency" className="block text-sm font-medium text-gray-700">
-              Currency
+              {t("Currency")}
             </label>
             <select
               id="currency"
@@ -106,7 +108,7 @@ export const CreateTransaction: React.FC = () => {
               type="submit"
               className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-blue-200 focus:ring-opacity-50"
             >
-              Create Transaction
+              {t("Create Transaction")}
             </button>
           </div>
         </form>
@@ -116,13 +118,13 @@ export const CreateTransaction: React.FC = () => {
             to="/transactions"
             className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded"
           >
-            View All Transactions
+            {t("View All Transactions")}
           </Link>
           <Link
             to="/"
             className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
           >
-            Go to Home
+            {t("Go to Home")}
           </Link>
         </div>
       </div>

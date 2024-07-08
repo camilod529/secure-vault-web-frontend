@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Transaction } from "../interfaces/transactionResponse.interface";
 import { Currency } from "../interfaces/currency.enum";
-import { Link } from "react-router-dom";
 import { useTransaction } from "../hooks/useTransaction";
 
 export const Transactions: React.FC = () => {
+  const { t } = useTranslation();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const { startLoadingTransactions } = useTransaction();
+
   useEffect(() => {
     startLoadingTransactions().then((transactions) => {
       setTransactions(transactions);
@@ -31,7 +34,7 @@ export const Transactions: React.FC = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-md rounded-lg overflow-hidden w-full max-w-3xl mb-8">
         <div className="bg-gray-200 px-4 py-3 border-b border-gray-300 flex justify-between items-center">
-          <h2 className="text-xl font-semibold text-gray-800">Currency Totals</h2>
+          <h2 className="text-xl font-semibold text-gray-800">{t("Currency Totals")}</h2>
         </div>
         <div className="divide-y divide-gray-200">
           {Object.values(Currency).map((currency) => (
@@ -43,7 +46,9 @@ export const Transactions: React.FC = () => {
             >
               <div>
                 <p className="text-gray-800 text-lg font-semibold">{currency}</p>
-                <p className="text-gray-600">Total: {getCurrenciesTotal(currency).toFixed(2)}</p>
+                <p className="text-gray-600">
+                  {t("Total")}: {getCurrenciesTotal(currency).toFixed(2)}
+                </p>
               </div>
             </div>
           ))}
@@ -52,15 +57,15 @@ export const Transactions: React.FC = () => {
 
       <div className="bg-white shadow-md rounded-lg overflow-hidden w-full max-w-3xl">
         <div className="bg-gray-200 px-4 py-3 border-b border-gray-300 flex justify-between items-center">
-          <h2 className="text-xl font-semibold text-gray-800">All Transactions</h2>
+          <h2 className="text-xl font-semibold text-gray-800">{t("All Transactions")}</h2>
           <p className="text-sm text-gray-500">
-            Total: {transactions.length}{" "}
-            {transactions.length === 1 ? "transaction" : "transactions"}
+            {t("Total")}: {transactions.length}{" "}
+            {transactions.length === 1 ? t("transaction") : t("transactions")}
           </p>
         </div>
         <div className="divide-y divide-gray-200">
           {transactions.length === 0 ? (
-            <p className="p-4 text-gray-500 text-center">No transactions found.</p>
+            <p className="p-4 text-gray-500 text-center">{t("No transactions found.")}</p>
           ) : (
             transactions.map((transaction) => (
               <div
@@ -73,10 +78,10 @@ export const Transactions: React.FC = () => {
                     {transaction.amount} {transaction.currency}
                   </p>
                   <p className="text-gray-500 text-sm">
-                    Created by: {transaction.createdBy.fullName}
+                    {t("Created by")}: {transaction.createdBy.fullName}
                   </p>
                   <p className="text-gray-500 text-sm">
-                    Created at: {new Date(transaction.created_at).toLocaleString()}
+                    {t("Created at")}: {new Date(transaction.created_at).toLocaleString()}
                   </p>
                 </div>
               </div>
@@ -87,7 +92,7 @@ export const Transactions: React.FC = () => {
               to="/"
               className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
             >
-              Go to Home
+              {t("Go to Home")}
             </Link>
           </div>
         </div>

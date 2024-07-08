@@ -6,6 +6,7 @@ import { useEffect } from "react";
 
 export const Router: React.FC = () => {
   const { checkAuthToken } = useAuthStore();
+  // const { changeLanguage } = useLanguage();
 
   useEffect(() => {
     checkAuthToken();

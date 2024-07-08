@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Transaction } from "../interfaces/transactionResponse.interface";
 import { Currency } from "../interfaces/currency.enum";
 import { useTransaction } from "../hooks";
 
 export const Total: React.FC = () => {
+  const { t } = useTranslation();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [totals, setTotals] = useState<{ [key in Currency]?: number }>({});
   const { startLoadingTransactions } = useTransaction();
@@ -36,9 +38,11 @@ export const Total: React.FC = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4 sm:p-8">
       <div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg w-full max-w-lg">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Total Money in Safe</h2>
+        <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
+          {t("View Total Money in Safe")}
+        </h2>
         {Object.keys(totals).length === 0 ? (
-          <p className="text-gray-500 text-center">No transactions found.</p>
+          <p className="text-gray-500 text-center">{t("No transactions found.")}</p>
         ) : (
           <ul className="space-y-4">
             {Object.entries(totals).map(([currency, total]) => (
@@ -57,13 +61,13 @@ export const Total: React.FC = () => {
             to="/transactions"
             className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded text-center"
           >
-            View All Transactions
+            {t("View All Transactions")}
           </Link>
           <Link
             to="/"
             className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded text-center"
           >
-            Go to Home
+            {t("Go to Home")}
           </Link>
         </div>
       </div>

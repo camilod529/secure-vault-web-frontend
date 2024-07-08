@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../hooks/useAuthStore";
+import { useTranslation } from "react-i18next";
+import { useLanguage } from "../hooks/useLanguage"; // Importar el hook useLanguage
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { startLogin } = useAuthStore();
+  const { changeLanguage } = useLanguage(); // Obtener la función changeLanguage del hook useLanguage
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    startLogin({
-      email,
-      password,
-    });
+    startLogin({ email, password });
   };
 
   const handleRegisterRedirect = () => {
@@ -23,10 +24,23 @@ export const Login: React.FC = () => {
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">Login</h2>
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">{t("Login")}</h2>
+        <div className="mt-4">
+          <label className="block text-gray-700">{t("Select Language")}</label>
+          <select
+            onChange={(e) => {
+              changeLanguage(e.target.value);
+            }}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+            value={i18n.language}
+          >
+            <option value="en">English</option>
+            <option value="es">Español</option>
+          </select>
+        </div>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700">Email</label>
+            <label className="block text-gray-700">{t("Email")}</label>
             <input
               type="email"
               value={email}
@@ -36,7 +50,7 @@ export const Login: React.FC = () => {
             />
           </div>
           <div className="mb-6">
-            <label className="block text-gray-700">Password</label>
+            <label className="block text-gray-700">{t("Password")}</label>
             <input
               type="password"
               value={password}
@@ -49,14 +63,14 @@ export const Login: React.FC = () => {
             type="submit"
             className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 mb-4"
           >
-            Login
+            {t("Login")}
           </button>
           <button
             type="button"
             onClick={handleRegisterRedirect}
             className="w-full bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600"
           >
-            Go to Register
+            {t("Go to Register")}
           </button>
         </form>
       </div>
