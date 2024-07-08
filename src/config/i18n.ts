@@ -39,6 +39,8 @@ const resources = {
       "Oops...": "Oops...",
       "Invalid credentials": "Invalid credentials",
       "Please fill in all fields": "Please fill in all fields",
+      "Transaction created successfully": "Transaction created successfully",
+      "Please try again": "Please try again",
     },
   },
   es: {
@@ -78,6 +80,8 @@ const resources = {
       "Oops...": "¡Ups...",
       "Invalid credentials": "Credenciales inválidas",
       "Please fill in all fields": "Por favor complete todos los campos",
+      "Transaction created successfully": "Transacción creada exitosamente",
+      "Please try again": "Por favor intente nuevamente",
     },
   },
 };
