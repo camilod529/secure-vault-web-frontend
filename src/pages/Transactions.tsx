@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Transaction } from "../interfaces/transactionResponse.interface";
 import { Currency } from "../interfaces/currency.enum";
 import { useTransaction } from "../hooks/useTransaction";
+import { transformToLegibleNumber } from "../helpers";
 
 export const Transactions: React.FC = () => {
   const { t } = useTranslation();
@@ -14,7 +15,7 @@ export const Transactions: React.FC = () => {
     startLoadingTransactions().then((transactions) => {
       setTransactions(transactions);
     });
-  }, [startLoadingTransactions]);
+  }, []);
 
   const getCurrenciesTotal = (currency: Currency): number => {
     return transactions.reduce((total, transaction) => {
@@ -47,7 +48,7 @@ export const Transactions: React.FC = () => {
               <div>
                 <p className="text-gray-800 text-lg font-semibold">{currency}</p>
                 <p className="text-gray-600">
-                  {t("Total")}: {getCurrenciesTotal(currency).toFixed(2)}
+                  {t("Total")}: {transformToLegibleNumber(getCurrenciesTotal(currency), currency)}
                 </p>
               </div>
             </div>
@@ -75,7 +76,7 @@ export const Transactions: React.FC = () => {
                 <div className="flex-1">
                   <p className="text-gray-800 text-lg font-semibold">{transaction.name}</p>
                   <p className="text-gray-600">
-                    {transaction.amount} {transaction.currency}
+                    {transformToLegibleNumber(transaction.amount, transaction.currency as Currency)}
                   </p>
                   <p className="text-gray-500 text-sm">
                     {t("Created by")}: {transaction.createdBy.fullName}

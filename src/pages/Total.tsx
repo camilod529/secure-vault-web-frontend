@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Transaction } from "../interfaces/transactionResponse.interface";
 import { Currency } from "../interfaces/currency.enum";
 import { useTransaction } from "../hooks";
+import { transformToLegibleNumber } from "../helpers/transformToLegibleNumber";
 
 export const Total: React.FC = () => {
   const { t } = useTranslation();
@@ -51,7 +52,7 @@ export const Total: React.FC = () => {
                 className="flex justify-between items-center text-lg text-gray-700"
               >
                 <span className="font-medium">{currency}:</span>
-                <span>{total}</span>
+                <span>{transformToLegibleNumber(total, currency as Currency)}</span>
               </li>
             ))}
           </ul>
