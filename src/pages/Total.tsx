@@ -13,7 +13,7 @@ export const Total: React.FC = () => {
     startLoadingTransactions().then((transactions) => {
       setTransactions(transactions);
     });
-  }, [startLoadingTransactions]);
+  }, []);
 
   useEffect(() => {
     const calculateTotals = () => {
@@ -34,30 +34,34 @@ export const Total: React.FC = () => {
   }, [transactions]);
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">Total Money in Safe</h2>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4 sm:p-8">
+      <div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg w-full max-w-lg">
+        <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Total Money in Safe</h2>
         {Object.keys(totals).length === 0 ? (
-          <p className="text-gray-500">No transactions found.</p>
+          <p className="text-gray-500 text-center">No transactions found.</p>
         ) : (
-          <ul>
+          <ul className="space-y-4">
             {Object.entries(totals).map(([currency, total]) => (
-              <li key={currency} className="text-lg text-gray-700">
-                {currency}: {total}
+              <li
+                key={currency}
+                className="flex justify-between items-center text-lg text-gray-700"
+              >
+                <span className="font-medium">{currency}:</span>
+                <span>{total}</span>
               </li>
             ))}
           </ul>
         )}
-        <div className="flex justify-between mt-4">
+        <div className="flex flex-col mt-6 space-y-4">
           <Link
             to="/transactions"
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded"
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded text-center"
           >
             View All Transactions
           </Link>
           <Link
             to="/"
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded text-center"
           >
             Go to Home
           </Link>
