@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useAuthStore } from "../hooks";
+import { useAuthStore, useForm } from "../hooks";
 import { useLanguage } from "../hooks/useLanguage"; // Importar el hook useLanguage
+
+const initialFormValue = {
+  email: "",
+  password: "",
+  fullName: "",
+};
 
 export const Register: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
+  const { email, password, fullName, onInputChange } = useForm(initialFormValue);
   const navigate = useNavigate();
   const { startRegister } = useAuthStore();
   const { changeLanguage } = useLanguage(); // Obtener la función changeLanguage del hook useLanguage
@@ -45,7 +49,8 @@ export const Register: React.FC = () => {
             <input
               type="text"
               value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              name="fullName"
+              onChange={onInputChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               required
             />
@@ -55,7 +60,8 @@ export const Register: React.FC = () => {
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
+              onChange={onInputChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               required
             />
@@ -65,7 +71,8 @@ export const Register: React.FC = () => {
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              onChange={onInputChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               required
             />

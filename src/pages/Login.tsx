@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../hooks/useAuthStore";
 import { useTranslation } from "react-i18next";
-import { useLanguage } from "../hooks/useLanguage"; // Importar el hook useLanguage
+import { useAuthStore, useForm, useLanguage } from "../hooks";
+
+const initialFormValue = {
+  email: "",
+  password: "",
+};
 
 export const Login: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { email, password, onInputChange } = useForm(initialFormValue);
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { startLogin } = useAuthStore();
-  const { changeLanguage } = useLanguage(); // Obtener la función changeLanguage del hook useLanguage
+  const { changeLanguage } = useLanguage();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +47,8 @@ export const Login: React.FC = () => {
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={onInputChange}
+              name="email"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               required
             />
@@ -54,7 +58,8 @@ export const Login: React.FC = () => {
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={onInputChange}
+              name="password"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               required
             />

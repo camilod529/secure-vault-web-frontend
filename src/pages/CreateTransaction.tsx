@@ -2,26 +2,32 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Currency } from "../interfaces/currency.enum";
-import { useTransaction } from "../hooks";
+
+import { useForm, useTransaction } from "../hooks";
 import Swal from "sweetalert2";
+
+const initialFormValue = {
+  name: "",
+  amount: "",
+};
 
 export const CreateTransaction: React.FC = () => {
   const { t } = useTranslation();
-  const [name, setName] = useState("");
-  const [amount, setAmount] = useState<number | "">("");
+  const { name, amount, onInputChange, onResetForm } = useForm(initialFormValue);
   const [currency, setCurrency] = useState<Currency>(Currency.COP);
   const [transactionType, setTransactionType] = useState<"Income" | "Expense">("Income"); // Estado para el tipo de transacción
   const { startCreatingTransaction } = useTransaction();
 
   const handleCreateTransaction = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (amount === "")
+    const numberAmamount = parseFloat(amount);
+    if (numberAmamount === 0)
       return Swal.fire({
         icon: "error",
         title: t("Amount is required"),
       });
 
-    if (typeof amount !== "number")
+    if (isNaN(numberAmamount))
       return Swal.fire({
         icon: "error",
         title: t("Amount must be a number"),
@@ -29,13 +35,10 @@ export const CreateTransaction: React.FC = () => {
 
     startCreatingTransaction({
       name,
-      amount,
+      amount: numberAmamount,
       currency,
     });
-  };
-
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(e.target.value === "" ? "" : parseFloat(e.target.value));
+    onResetForm();
   };
 
   return (
@@ -52,7 +55,8 @@ export const CreateTransaction: React.FC = () => {
               id="name"
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              name="name"
+              onChange={onInputChange}
               required
             />
           </div>
@@ -65,7 +69,8 @@ export const CreateTransaction: React.FC = () => {
               id="amount"
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
               value={amount === "" ? "" : amount.toString()} // Convertir amount a cadena explícitamente
-              onChange={handleAmountChange}
+              name="amount"
+              onChange={onInputChange}
               min="0" // Para permitir solo valores positivos
               required
             />
