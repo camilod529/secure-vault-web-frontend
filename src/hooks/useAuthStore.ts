@@ -75,9 +75,9 @@ export const useAuthStore = (): returnType => {
       localStorage.setItem("token-init-date", new Date().getTime().toString());
       dispatch(login(data));
     } catch (error) {
+      console.error("Error occurred:", error);
       if (axios.isAxiosError(error)) {
         const errorMessage = error.response?.data?.message || "An error occurred";
-        console.error("Axios error:", error.response?.data);
         Swal.fire({
           icon: "error",
           title: "Oops...",
@@ -85,7 +85,6 @@ export const useAuthStore = (): returnType => {
           timer: 2500,
         });
       } else {
-        console.error("Error occurred:", error);
         Swal.fire({
           icon: "error",
           title: "Oops...",
