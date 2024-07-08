@@ -9,7 +9,7 @@ export const Router: React.FC = () => {
 
   useEffect(() => {
     checkAuthToken();
-  }, [checkAuthToken]);
+  }, []);
 
   return (
     <Routes>
