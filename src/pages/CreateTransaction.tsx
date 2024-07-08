@@ -20,7 +20,10 @@ export const CreateTransaction: React.FC = () => {
 
   const handleCreateTransaction = async (e: React.FormEvent) => {
     e.preventDefault();
-    const numberAmamount = parseFloat(amount);
+    const numberAmamount =
+      transactionType === "Income"
+        ? Math.abs(parseFloat(amount as string))
+        : -Math.abs(parseFloat(amount as string));
     if (numberAmamount === 0)
       return Swal.fire({
         icon: "error",
